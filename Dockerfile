@@ -280,7 +280,7 @@ RUN set -eux \
     \
     echo "Done"
 
-FROM alpine:latest
+FROM alpine:latest AS middle
 
 RUN apk add --no-cache libgcc
 
@@ -310,7 +310,9 @@ RUN mkdir -p /usr/local/nginx/logs && chown -R nobody:nobody /usr/local/nginx/lo
 # USER nobody
 
 # FROM bailangvvking/openresty:latest
-FROM builder
+# FROM builder - 错误：builder是阶段名，不是镜像名
+FROM middle AS final
+
 EXPOSE 80 443 3000
 
 USER root
