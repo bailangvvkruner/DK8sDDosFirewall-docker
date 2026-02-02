@@ -15,11 +15,13 @@ function protect(during, ttl, count_limit, bytes_limit, costs_limit)
     local dict = ngx.shared.traffic_stats
     local timestamp = ngx.now()
     local ip = ngx.var.limit_key
-    local count_key = str_concat("count", during, ip)
-    local bytes_key = str_concat("bytes", during, ip)
-    local costs_key = str_concat("costs", during, ip)
-    local last_time_key = str_concat("last", during, ip)
-    local forbidden_key = str_concat("forbidden", during, ip)
+    -- 使用标准化的IP地址进行保护，确保IPv6地址正确处理
+    local normalized_ip = ngx.var.normalized_ip or ip
+    local count_key = str_concat("count", during, normalized_ip)
+    local bytes_key = str_concat("bytes", during, normalized_ip)
+    local costs_key = str_concat("costs", during, normalized_ip)
+    local last_time_key = str_concat("last", during, normalized_ip)
+    local forbidden_key = str_concat("forbidden", during, normalized_ip)
 
     local last_time = dict:get(last_time_key)
     if last_time == nil or last_time + ttl < timestamp then

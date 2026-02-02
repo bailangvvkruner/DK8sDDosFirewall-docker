@@ -7,4 +7,31 @@ Protect your service from CC attacks, UDP attacks, and traffic flooding attacks.
 
 `For more information, please visit `[https://www.dk8s.com](https://www.dk8s.com)
 
-![WeChat](https://raw.githubusercontent.com/yinyue123/DK8sDDosFirewall/main/wechat.jpg)
+
+```
+DIR=/data/dk8sfirewall
+# GH=https://gitee.com/azhaoyang_admin/DK8sDDosFirewall/raw/main
+GH=https://gitee.com/white-wolf-vvvk/DK8sDDosFirewall/raw/main
+
+mkdir -p "$DIR"
+cd "$DIR"
+
+for f in nginx.conf env.conf cert.crt cert.key protect.lua record.lua stats.lua persistence.lua save_data.lua view_data.lua cdn_ips.conf; do
+  curl -L --retry 3 -o "$DIR/$f" "$GH/$f"
+done
+
+docker run -d \
+--name dk8s-ddos-fw \
+--user=root \
+--network host \
+--cap-add=NET_ADMIN \
+--cap-add=NET_RAW \
+--cap-add=SYS_ADMIN \
+-v "$DIR:/app:rw" \
+bailangvvking/dk8sddosfirewall:latest
+
+```
+
+
+## 压测
+go run stress.go https://blog.gov6g.cn 100 100s
