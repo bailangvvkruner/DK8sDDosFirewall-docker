@@ -48,9 +48,6 @@ RUN set -eux \
     # 包含strip命令
     binutils \
     && \
-    # CVE-2025-15467
-    apk upgrade --no-cache libssl3 \
-    && \
     # 尝试安装 upx，如果不可用则继续（某些架构可能不支持）
     apk add --no-cache --no-scripts --virtual .upx-deps \
         upx 2>/dev/null || echo "upx not available, skipping compression" \
@@ -322,6 +319,9 @@ USER root
 RUN mkdir /app
 WORKDIR /app
 RUN apk add --no-cache tzdata
+
+# CVE-2025-15467
+RUN apk upgrade --no-cache libssl3
 ENV TZ Asia/Shanghai
 # 同样 也不需要拷过去了
 # COPY --from=builder /app/stats.ljbc   /app/
