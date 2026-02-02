@@ -49,7 +49,7 @@ RUN set -eux \
     binutils \
     && \
     # CVE-2025-15467
-    apk upgrade --no-cache libssl3
+    apk upgrade --no-cache libssl3 \
     && \
     # 尝试安装 upx，如果不可用则继续（某些架构可能不支持）
     apk add --no-cache --no-scripts --virtual .upx-deps \
