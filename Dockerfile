@@ -316,12 +316,13 @@ FROM middle AS final
 EXPOSE 80 443 3000
 
 USER root
-RUN mkdir /app
-WORKDIR /app
-RUN apk add --no-cache tzdata
+RUN mkdir /app && \
+    apk update && \
+    apk add --no-cache tzdata && \
+    # CVE-2025-15467
+    apk upgrade --no-cache libssl3
 
-# CVE-2025-15467
-RUN apk upgrade --no-cache libssl3
+WORKDIR /app
 ENV TZ Asia/Shanghai
 # 同样 也不需要拷过去了
 # COPY --from=builder /app/stats.ljbc   /app/
