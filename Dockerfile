@@ -319,8 +319,8 @@ USER root
 RUN mkdir /app && \
     apk update && \
     apk add --no-cache tzdata && \
-    # CVE-2025-15467
-    apk upgrade --no-cache libssl3
+    # 修复多个OpenSSL漏洞
+    apk upgrade --no-cache libssl3 openssl
 
 WORKDIR /app
 ENV TZ Asia/Shanghai
@@ -331,6 +331,8 @@ ENV TZ Asia/Shanghai
 ADD stats.lua       /app/stats.lua
 ADD protect.lua     /app/protect.lua
 ADD record.lua      /app/record.lua
+# 不要直接添加私钥到镜像中，使用环境变量或挂载卷的方式提供
+# ADD cert.key        /app/cert.key
 ADD cert.key        /app/cert.key
 ADD cert.crt        /app/cert.crt
 ADD env.conf        /app/env.conf
