@@ -322,18 +322,6 @@ RUN mkdir /app && \
     # 修复多个OpenSSL漏洞
     apk upgrade --no-cache libssl3 openssl
 
-RUN openssl req \
-  -x509 \
-  -new \
-  -nodes \
-  -newkey ec:<(openssl ecparam -name prime256v1) \
-  -keyout cert.key \
-  -out cert.crt \
-  -sha256 \
-  -days 3650 \
-  -subj "/CN=_" \
-  -addext "subjectAltName = DNS:_"
-
 WORKDIR /app
 ENV TZ Asia/Shanghai
 # 同样 也不需要拷过去了
