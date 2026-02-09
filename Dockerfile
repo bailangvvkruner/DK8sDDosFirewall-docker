@@ -337,9 +337,12 @@ ADD record.lua      /app/record.lua
 # ADD cert.crt        /app/cert.crt
 ADD env.conf        /app/env.conf
 ADD nginx.conf      /app/nginx.conf
+ADD entrypoint.sh     /app/entrypoint.sh
 
 # 更改文件权限给 nobody
 RUN chown -R nobody:nobody /app
+
+RUN chown +x /app/entrypoint.sh
 
 # 切换到非 root 用户
 USER nobody
