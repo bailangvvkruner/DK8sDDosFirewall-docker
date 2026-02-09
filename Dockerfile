@@ -322,6 +322,18 @@ RUN mkdir /app && \
     # 修复多个OpenSSL漏洞
     apk upgrade --no-cache libssl3 openssl
 
+RUN openssl req \
+  -x509 \
+  -new \
+  -nodes \
+  -newkey ec:<(openssl ecparam -name prime256v1) \
+  -keyout cert.key \
+  -out cert.crt \
+  -sha256 \
+  -days 3650 \
+  -subj "/CN=_" \
+  -addext "subjectAltName = DNS:_"
+
 WORKDIR /app
 ENV TZ Asia/Shanghai
 # 同样 也不需要拷过去了
@@ -333,8 +345,8 @@ ADD protect.lua     /app/protect.lua
 ADD record.lua      /app/record.lua
 # 不要直接添加私钥到镜像中，使用环境变量或挂载卷的方式提供
 # ADD cert.key        /app/cert.key
-ADD cert.key        /app/cert.key
-ADD cert.crt        /app/cert.crt
+# ADD cert.key        /app/cert.key
+# ADD cert.crt        /app/cert.crt
 ADD env.conf        /app/env.conf
 ADD nginx.conf      /app/nginx.conf
 
