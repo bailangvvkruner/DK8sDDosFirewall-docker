@@ -348,6 +348,6 @@ RUN chown +x /app/entrypoint.sh
 USER nobody
 
 # 如果有端口变量则修改
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 CMD ["openresty", "-c", "/app/nginx.conf"]
