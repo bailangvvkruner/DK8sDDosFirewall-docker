@@ -6,8 +6,8 @@ openssl req \
   -new \
   -nodes \
   -newkey ec:<(openssl ecparam -name prime256v1) \
-  -keyout default.key \
-  -out default.crt \
+  -keyout cert.key \
+  -out cert.crt \
   -sha256 \
   -days 3650 \
   -subj "/CN=_" \
