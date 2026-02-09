@@ -356,4 +356,7 @@ RUN chown -R nobody:nobody /app
 # 切换到非 root 用户
 USER nobody
 
+# 如果有端口变量则修改
+ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["openresty", "-c", "/app/nginx.conf"]
