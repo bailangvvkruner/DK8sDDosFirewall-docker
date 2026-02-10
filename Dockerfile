@@ -339,17 +339,17 @@ ADD record.lua      /app/record.lua
 # ADD cert.crt        /app/cert.crt
 ADD env.conf        /app/env.conf
 ADD nginx.conf      /app/nginx.conf
-ADD entrypoint.sh     /app/entrypoint.sh
+ADD entrypoint.sh     /entrypoint.sh
 
 # 更改文件权限给 nobody
-RUN chown -R nobody:nobody /app
-
-RUN chmod +x /app/entrypoint.sh
+RUN chown -R nobody:nobody /app && \
+    chmod +x /entrypoint.sh && \
+    chown nobody:nobody /entrypoint.sh
 
 # 切换到非 root 用户
 USER nobody
 
 # 如果有端口变量则修改
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["openresty", "-c", "/app/nginx.conf"]
