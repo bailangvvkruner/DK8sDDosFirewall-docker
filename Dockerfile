@@ -342,12 +342,12 @@ ADD entrypoint.sh     /app/entrypoint.sh
 # 更改文件权限给 nobody
 RUN chown -R nobody:nobody /app
 
-RUN chown +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # 切换到非 root 用户
 USER nobody
 
 # 如果有端口变量则修改
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["openresty", "-c", "/app/nginx.conf"]
