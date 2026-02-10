@@ -6,12 +6,15 @@ openssl req \
   -new \
   -nodes \
   -newkey ec:<(openssl ecparam -name prime256v1) \
-  -keyout cert.key \
-  -out cert.crt \
+  -keyout certkey \
+  -out certcrt \
   -sha256 \
   -days 3650 \
   -subj "/CN=_" \
   -addext "subjectAltName = DNS:_"
+
+mv certcrt cert.crt
+mv certkey certk.key
 
 # # 检查 HTTP_PORT 是否设置，否则默认为 80
 # if [ -z "$HTTP_PORT" ]; then
