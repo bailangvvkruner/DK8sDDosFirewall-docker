@@ -119,11 +119,13 @@ RUN set -eux \
     git clone --depth=1 https://github.com/tokers/zstd-nginx-module.git && \
     cd ngx_brotli/deps/brotli && \
     mkdir out && cd out && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_CXX_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_EXE_LINKER_FLAGS="-flto -Wl,-O1" .. && \
+    # cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_CXX_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_EXE_LINKER_FLAGS="-flto -Wl,-O1" .. && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-O3 -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_CXX_FLAGS="-O3 -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_EXE_LINKER_FLAGS="-flto -Wl,-O1" .. && \
     make -j$(nproc) && \
     make install && \
     cd /tmp/zstd-${ZSTD_VERSION} && \
-    CFLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" LDFLAGS="-flto -Wl,-O1" make -j$(nproc) && \
+    # CFLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" LDFLAGS="-flto -Wl,-O1" make -j$(nproc) && \
+    CFLAGS="-O3 -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" LDFLAGS="-flto -Wl,-O1" make -j$(nproc) && \
     make install PREFIX=/usr/local/zstd && \
     cd /tmp && \
     # cd openresty-${OPENRESTY_VERSION} && \
@@ -190,8 +192,8 @@ RUN set -eux \
     --with-stream=dynamic \
     --with-http_ssl_module \
     # 优化双精度浮点数性能的编译选项
-    # --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O3 -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
-    --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -Ofast -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
+    --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O3 -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
+    # --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -Ofast -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
     # 官方推荐：在configure中直接使用多核
     -j$(nproc) \
     # --with-debug \
