@@ -14,7 +14,7 @@ openssl req \
   -addext "subjectAltName = DNS:_"
 
 mv certcrt cert.crt
-mv certkey certk.key
+mv certkey cert.key
 
 # # 检查 HTTP_PORT 是否设置，否则默认为 80
 # if [ -z "$HTTP_PORT" ]; then
