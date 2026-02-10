@@ -119,11 +119,11 @@ RUN set -eux \
     git clone --depth=1 https://github.com/tokers/zstd-nginx-module.git && \
     cd ngx_brotli/deps/brotli && \
     mkdir out && cd out && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli .. && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_CXX_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_EXE_LINKER_FLAGS="-flto -Wl,-O1" .. && \
     make -j$(nproc) && \
     make install && \
     cd /tmp/zstd-${ZSTD_VERSION} && \
-    make -j$(nproc) && \
+    CFLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" LDFLAGS="-flto -Wl,-O1" make -j$(nproc) && \
     make install PREFIX=/usr/local/zstd && \
     cd /tmp && \
     # cd openresty-${OPENRESTY_VERSION} && \
@@ -160,8 +160,8 @@ RUN set -eux \
     # --with-cc-opt="-static -O3 -DNGX_LUA_ABORT_AT_PANIC -static-libgcc" \
     # --with-ld-opt="-static -Wl,--export-dynamic" \
     # --with-cc-opt="-O3 -DNGX_LUA_ABORT_AT_PANIC" \
-    --with-cc-opt="-Ofast -flto -DNGX_LUA_ABORT_AT_PANIC" \
-    --with-ld-opt="-Wl,--export-dynamic" \
+    --with-cc-opt="-Ofast -flto -DNGX_LUA_ABORT_AT_PANIC -march=native -mtune=native -ffast-math -fomit-frame-pointer -funroll-loops -fgcse-lm -fgcse-sm -fipa-pta -frename-registers -ftree-loop-vectorize -ftree-vectorize -fvect-cost-model=unlimited" \
+    --with-ld-opt="-Wl,--export-dynamic -flto -Wl,-O1 -Wl,--as-needed" \
     --with-openssl=../openssl-${OPENSSL_VERSION} \
     --with-zlib=../zlib-${ZLIB_VERSION} \
     # --with-pcre=../pcre-${PCRE_VERSION} \
