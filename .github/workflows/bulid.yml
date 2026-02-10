@@ -20,7 +20,7 @@ permissions:
 env:
   IMAGE_NAME: dk8sddosfirewall
   # DOCKER_REPO: bailangvvking/go-wrk
-  IMAGE_TAG: test
+  IMAGE_TAG: latest
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 # 在jobs中使用的时候动态拼接DOCKER_REPO
