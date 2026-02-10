@@ -41,4 +41,4 @@ mv certkey certk.key
 
 # echo "--> Starting Nginx..."
 # # 执行传递给脚本的命令 (例如, nginx -g 'daemon off;')
-# exec "$@"
+exec "$@"
