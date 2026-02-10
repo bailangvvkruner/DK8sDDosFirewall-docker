@@ -190,6 +190,7 @@ RUN set -eux \
     --with-stream=dynamic \
     --with-http_ssl_module \
     # 优化双精度浮点数性能的编译选项
+    # --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O3 -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
     --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -Ofast -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
     # 官方推荐：在configure中直接使用多核
     -j$(nproc) \
@@ -349,6 +350,6 @@ RUN chmod +x /app/entrypoint.sh
 USER nobody
 
 # 如果有端口变量则修改
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 CMD ["openresty", "-c", "/app/nginx.conf"]
