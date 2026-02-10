@@ -159,7 +159,8 @@ RUN set -eux \
     --http-log-path=/usr/local/nginx/logs/access.log \
     # --with-cc-opt="-static -O3 -DNGX_LUA_ABORT_AT_PANIC -static-libgcc" \
     # --with-ld-opt="-static -Wl,--export-dynamic" \
-    --with-cc-opt="-O3 -DNGX_LUA_ABORT_AT_PANIC" \
+    # --with-cc-opt="-O3 -DNGX_LUA_ABORT_AT_PANIC" \
+    --with-cc-opt="-Ofast -flto -DNGX_LUA_ABORT_AT_PANIC" \
     --with-ld-opt="-Wl,--export-dynamic" \
     --with-openssl=../openssl-${OPENSSL_VERSION} \
     --with-zlib=../zlib-${ZLIB_VERSION} \
@@ -189,7 +190,7 @@ RUN set -eux \
     --with-stream=dynamic \
     --with-http_ssl_module \
     # 优化双精度浮点数性能的编译选项
-    --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O3 -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
+    --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -Ofast -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
     # 官方推荐：在configure中直接使用多核
     -j$(nproc) \
     # --with-debug \
