@@ -321,7 +321,8 @@ USER root
 RUN mkdir /app && \
     apk update && \
     apk add --no-cache tzdata openssl bash && \
-    # 修复多个OpenSSL漏洞\n    apk upgrade --no-cache libssl3 openssl
+    # 修复多个OpenSSL漏洞 \
+    apk upgrade --no-cache libssl3 openssl
 
 WORKDIR /app
 ENV TZ Asia/Shanghai
