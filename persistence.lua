@@ -4,13 +4,19 @@ local cjson = require "cjson"
 local _M = {}
 
 -- 存储文件路径
-_M.storage_file = "data/traffic_stats.json"
+_M.storage_file = "/app/data/traffic_stats.json"
 
 -- 确保目录存在
 local function ensure_directory()
-    local dir = "data"
-    local cmd = "mkdir " .. dir
-    os.execute(cmd)
+    local dir = "/app/data"
+    local f = io.popen("mkdir -p " .. dir .. " 2>&1")
+    if f then
+        local result = f:read("*a")
+        f:close()
+        if result and result ~= "" then
+            ngx.log(ngx.WARN, "mkdir output: ", result)
+        end
+    end
 end
 
 -- 保存数据到文件

@@ -120,12 +120,12 @@ RUN set -eux \
     cd ngx_brotli/deps/brotli && \
     mkdir out && cd out && \
     # cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_CXX_FLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_EXE_LINKER_FLAGS="-flto -Wl,-O1" .. && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-O3 -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_CXX_FLAGS="-O3 -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" -DCMAKE_EXE_LINKER_FLAGS="-flto -Wl,-O1" .. && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local/brotli -DCMAKE_C_FLAGS="-O2" -DCMAKE_CXX_FLAGS="-O2" -DCMAKE_EXE_LINKER_FLAGS="-Wl,-O1" .. && \
     make -j$(nproc) && \
     make install && \
     cd /tmp/zstd-${ZSTD_VERSION} && \
     # CFLAGS="-Ofast -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" LDFLAGS="-flto -Wl,-O1" make -j$(nproc) && \
-    CFLAGS="-O3 -flto -march=native -mtune=native -ffast-math -fomit-frame-pointer" LDFLAGS="-flto -Wl,-O1" make -j$(nproc) && \
+    CFLAGS="-O2" LDFLAGS="-Wl,-O1" make -j$(nproc) && \
     make install PREFIX=/usr/local/zstd && \
     cd /tmp && \
     # cd openresty-${OPENRESTY_VERSION} && \
@@ -162,8 +162,9 @@ RUN set -eux \
     # --with-cc-opt="-static -O3 -DNGX_LUA_ABORT_AT_PANIC -static-libgcc" \
     # --with-ld-opt="-static -Wl,--export-dynamic" \
     # --with-cc-opt="-O3 -DNGX_LUA_ABORT_AT_PANIC" \
-    --with-cc-opt="-Ofast -flto -DNGX_LUA_ABORT_AT_PANIC -march=native -mtune=native -ffast-math -fomit-frame-pointer -funroll-loops -fgcse-lm -fgcse-sm -fipa-pta -frename-registers -ftree-loop-vectorize -ftree-vectorize -fvect-cost-model=unlimited" \
-    --with-ld-opt="-Wl,--export-dynamic -flto -Wl,-O1 -Wl,--as-needed" \
+    # --with-cc-opt="-Ofast -flto -DNGX_LUA_ABORT_AT_PANIC -ffast-math -fomit-frame-pointer -funroll-loops -fgcse-lm -fgcse-sm -fipa-pta -frename-registers -ftree-loop-vectorize -ftree-vectorize -fvect-cost-model=unlimited" \
+    --with-cc-opt="-O2 -DNGX_LUA_ABORT_AT_PANIC" \
+    --with-ld-opt="-Wl,--export-dynamic -Wl,-O1 -Wl,--as-needed" \
     --with-openssl=../openssl-${OPENSSL_VERSION} \
     --with-zlib=../zlib-${ZLIB_VERSION} \
     # --with-pcre=../pcre-${PCRE_VERSION} \
@@ -192,7 +193,8 @@ RUN set -eux \
     --with-stream=dynamic \
     --with-http_ssl_module \
     # 优化双精度浮点数性能的编译选项
-    --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O3 -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
+    # --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O3 -flto -ffat-lto-objects -fomit-frame-pointer' \
+    --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -O2' \
     # --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_GC64 -DLUAJIT_ENABLE_LUA52COMPAT -Ofast -march=native -mtune=native -flto -ffat-lto-objects -fomit-frame-pointer' \
     # 官方推荐：在configure中直接使用多核
     -j$(nproc) \
@@ -264,23 +266,17 @@ RUN set -eux \
     make -j$(nproc) && \
     make install \
     && \
-    # OPENRESTY_BIN=$(readlink -f /usr/local/bin/openresty) && \
-    # strip /usr/local/nginx/sbin/nginx
     strip /usr/local/bin/openresty && \
     strip /usr/local/nginx/sbin/nginx && \
     # 处理luajit符号链接问题：找到实际文件路径
     LUAJIT_BIN=$(readlink -f /usr/local/luajit/bin/luajit) && \
     strip "$LUAJIT_BIN" && \
     strip /usr/local/luajit/lib/libluajit-5.1.so.2 && \
-    # find /usr/local/nginx/modules -name '*.so' -exec strip {} \; && \
     find /usr/local/nginx -name '*.so' -exec strip {} \; && \
     find /usr/local/lualib -name '*.so' -exec strip {} \; && \
     \
-    upx --best --lzma /usr/local/nginx/sbin/nginx && \
-    # upx --best --lzma /usr/local/bin/openresty && \
-    # 压缩实际的luajit二进制文件而不是符号链接
-    upx --best --lzma "$LUAJIT_BIN" && \
-    # upx "$OPENRESTY_BIN" && \
+    upx --best --lzma /usr/local/nginx/sbin/nginx 2>/dev/null || echo "upx compression skipped" && \
+    upx --best --lzma "$LUAJIT_BIN" 2>/dev/null || echo "upx compression skipped" && \
     \
     echo "Done"
 
@@ -344,7 +340,8 @@ ADD nginx.conf      /app/nginx.conf
 ADD entrypoint.sh     /entrypoint.sh
 
 # 更改文件权限给 nobody
-RUN chown -R nobody:nobody /app && \
+RUN mkdir -p /app/data && \
+    chown -R nobody:nobody /app && \
     chmod +x /entrypoint.sh && \
     chown nobody:nobody /entrypoint.sh
 
