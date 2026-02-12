@@ -328,24 +328,24 @@ ENV TZ Asia/Shanghai
 # COPY --from=builder /app/stats.ljbc   /app/
 # COPY --from=builder /app/protect.ljbc /app/
 # COPY --from=builder /app/record.ljbc  /app/
-ADD stats.lua       /app/stats.lua
-ADD protect.lua     /app/protect.lua
-ADD record.lua      /app/record.lua
-ADD persistence.lua      /app/persistence.lua
-ADD save_data.lua      /app/save_data.lua
-ADD view_data.lua      /app/view_data.lua
+ADD stats.lua       /app/lua/stats.lua
+ADD protect.lua     /app/lua/protect.lua
+ADD record.lua      /app/lua/record.lua
+ADD persistence.lua      /app/lua/persistence.lua
+ADD save_data.lua      /app/lua/save_data.lua
+ADD view_data.lua      /app/lua/view_data.lua
 
 # 不要直接添加私钥到镜像中，使用环境变量或挂载卷的方式提供
 # ADD cert.key        /app/cert.key
 # ADD cert.key        /app/cert.key
 # ADD cert.crt        /app/cert.crt
-ADD env.conf        /app/env.conf
-ADD nginx.conf      /app/nginx.conf
-ADD cdn_ips.conf      /app/cdn_ips.conf
+ADD env.conf        /app/conf/env.conf
+ADD nginx.conf      /app/conf/nginx.conf
+ADD cdn_ips.conf      /app/conf/cdn_ips.conf
 ADD entrypoint.sh     /entrypoint.sh
 
 # 更改文件权限给 nobody
-RUN mkdir -p /app/data && \
+RUN mkdir -p /app/data /app/conf /app/lua && \
     chown -R nobody:nobody /app && \
     chmod +x /entrypoint.sh && \
     chown nobody:nobody /entrypoint.sh
@@ -356,4 +356,4 @@ USER nobody
 # 如果有端口变量则修改
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["openresty", "-c", "/app/nginx.conf"]
+CMD ["openresty", "-c", "/app/conf/nginx.conf"]

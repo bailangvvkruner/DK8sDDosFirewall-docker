@@ -51,10 +51,10 @@ if [ -n "$HTTP_PORT" ] || [ -n "$HTTPS_PORT" ] || [ -n "$SERVER_NAME" ]; then
     }
     
     print
-  }' /app/nginx.conf > "$CONF_TMP"
+  }' /app/conf/nginx.conf > "$CONF_TMP"
   
   # 将修改后的内容写回到配置文件，然后删除临时文件
-  cat "$CONF_TMP" > /app/nginx.conf && rm "$CONF_TMP"
+  cat "$CONF_TMP" > /app/conf/nginx.conf && rm "$CONF_TMP"
   
   echo "--> HTTP_PORT: ${HTTP_PORT:-default}"
   echo "--> HTTPS_PORT: ${HTTPS_PORT:-default}"
