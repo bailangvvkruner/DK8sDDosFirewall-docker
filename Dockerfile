@@ -331,12 +331,17 @@ ENV TZ Asia/Shanghai
 ADD stats.lua       /app/stats.lua
 ADD protect.lua     /app/protect.lua
 ADD record.lua      /app/record.lua
+ADD persistence.lua      /app/persistence.lua
+ADD save_data.lua      /app/save_data.lua
+ADD view_data.lua      /app/view_data.lua
+
 # 不要直接添加私钥到镜像中，使用环境变量或挂载卷的方式提供
 # ADD cert.key        /app/cert.key
 # ADD cert.key        /app/cert.key
 # ADD cert.crt        /app/cert.crt
 ADD env.conf        /app/env.conf
 ADD nginx.conf      /app/nginx.conf
+ADD cdn_ips.conf      /app/cdn_ips.conf
 ADD entrypoint.sh     /entrypoint.sh
 
 # 更改文件权限给 nobody
