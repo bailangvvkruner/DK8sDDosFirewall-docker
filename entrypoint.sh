@@ -45,9 +45,9 @@ if [ -n "$HTTP_PORT" ] || [ -n "$HTTPS_PORT" ] || [ -n "$SERVER_NAME" ]; then
       gsub(/listen\s+\[::\]:443\s+ssl\s+default_server\s*;/, "listen [::]:" https_port " ssl default_server;")
     }
     
-    # 替换 server_name
+    # 替换 server_name 指令（只匹配行首的 server_name，避免替换 $server_name 变量）
     if (server_name != "") {
-      gsub(/server_name\s+[^;]+;/, "server_name " server_name " ;")
+      gsub(/^\s*server_name\s+[^;]+;/, "server_name " server_name " ;")
     }
     
     print
