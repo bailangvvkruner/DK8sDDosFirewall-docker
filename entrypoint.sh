@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eux
 
-cd /app
+cd /tmp
 
 openssl req \
   -x509 \
@@ -18,6 +18,6 @@ openssl req \
 mv certcrt cert.crt
 mv certkey cert.key
 
-mkdir -p data
+mkdir -p /app/data
 
 exec "$@"
